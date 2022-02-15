@@ -1,0 +1,86 @@
+
+#seqkit fq2fa ../02_qc/4c.fastq > 4c.fasta
+
+#conda activate tools
+#makeblastdb -in ./4c.fasta -dbtype nucl
+
+
+
+conda activate tools
+
+for p in `ls ../donor/`
+do
+blastn -db ../../superKH_B2_2_NF.fasta \
+-query ../donor/$p \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > B2_blast_${p%%.fa}.tab
+done
+
+<<EOF
+
+
+
+blastn -db ./fasta.d/$i.fasta \
+-query ../../00_data/insertion_region.fasta \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > $i\_blast_insert.tab
+
+blastn -db ./fasta.d/$i.fasta \
+-query ../../00_data/pCR4-21164645#9_1kbpHA-HaloTag-121-121-AcGFP1-2.fa \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > $i\_blast_all.tab    
+
+blastn -db ./fasta.d/$i.fasta \
+-query ../../00_data/AcGFP1.fasta \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > $i\_blast_gfp.tab
+
+blastn -db ./fasta.d/$i.fasta \
+-query ../../00_data/Reverse_orientation-HaloTag.fasta \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > $i\_blast_halo.tab
+
+blastn -db ./fasta.d/$i.fasta \
+-query ../../00_data/121_promoter.fa \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > $i\_blast_121.tab
+
+for p in LHA RHA
+do
+blastn -db ./fasta.d/$i.fasta \
+-query ../../00_data/21164645#9-1kb$p.fa \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > $i\_blast_$p.tab
+done
+
+blastn -db ./fasta.d/$i.fasta \
+-query ../../00_data/Zeocin_R.fa \
+-evalue 1.0E-30 \
+-word_size 11 \
+-num_threads 24 \
+-outfmt "6 qseqid sseqid pident nident mismatch gapopen qlen qstart qend slen sstart send evalue" > $i\_blast_zeo.tab
+
+
+
+
+
+
+
+
+
+
+EOF

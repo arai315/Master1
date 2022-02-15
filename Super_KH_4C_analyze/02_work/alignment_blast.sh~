@@ -1,0 +1,30 @@
+
+conda activate tools
+for blast in `ls *.tab`
+do
+    p0=`echo ${blast##*_}`
+    echo 'p0 = '$p0
+    p1=`echo ${blast%%.tab}`
+    echo 'p1 = '$p1
+    p=`echo ${p0%%.tab}`
+    echo 'p = '$p
+    
+    dir=awk_$p
+    cd $dir
+
+    blastn -db ~/database/pv11_5.2.masked/Pv11_5.2_maskgapdh.fasta \
+    -query $p1\_total.fasta \
+    -max_target_seqs 1 \
+    -max_hsps 1 \
+    -evalue 1.0E-30 \
+    -outfmt 6 > $p\_total_alignment.tab
+    
+    blastn -db ~/database/pv11_5.2.masked/Pv11_5.2_maskgapdh.fasta \
+    -query $p1\_total2.fasta \
+    -max_target_seqs 1 \
+    -max_hsps 1 \
+    -evalue 1.0E-30 \
+    -outfmt 6 > $p\_total2_alignment.tab
+
+    cd ../
+done
